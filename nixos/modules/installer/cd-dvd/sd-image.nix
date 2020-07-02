@@ -18,7 +18,7 @@ with lib;
 let
   rootfsImage = pkgs.callPackage ../../../lib/make-ext4-fs.nix ({
     inherit (config.sdImage) storePaths;
-    compressImage = true;
+    compressImage = false;
     populateImageCommands = config.sdImage.populateRootCommands;
     volumeLabel = "NIXOS_SD";
   } // optionalAttrs (config.sdImage.rootPartitionUUID != null) {
@@ -130,10 +130,10 @@ in
     sdImage.storePaths = [ config.system.build.toplevel ];
 
     system.build.sdImage = pkgs.callPackage ({ stdenv, dosfstools, e2fsprogs,
-    mtools, libfaketime, utillinux, bzip2, zstd }: stdenv.mkDerivation {
+    mtools, libfaketime, utillinux, bzip2, zstd, coreutils }: stdenv.mkDerivation {
       name = config.sdImage.imageName;
 
-      nativeBuildInputs = [ dosfstools e2fsprogs mtools libfaketime utillinux bzip2 zstd ];
+      nativeBuildInputs = [ dosfstools e2fsprogs mtools libfaketime utillinux bzip2 zstd coreutils ];
 
       inherit (config.sdImage) compressImage;
 
@@ -148,8 +148,8 @@ in
           echo "file sd-image $img" >> $out/nix-support/hydra-build-products
         fi
 
-        echo "Decompressing rootfs image"
-        zstd -d --no-progress "${rootfsImage}" -o ./root-fs.img
+        echo "copying rootfs image"
+        dd if="${rootfsImage}" of=./root-fs.img bs=10M
 
         # Gap in front of the first partition, in MiB
         gap=8
