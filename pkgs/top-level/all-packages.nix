@@ -5448,6 +5448,9 @@ in
 
   ofono-phonesim = libsForQt5.callPackage ../development/tools/ofono-phonesim/default.nix { };
 
+  ogfx-tools = callPackage ../applications/audio/ogfx/ogfx-tools.nix {};
+  ogfx-ui = python36Packages.callPackage ../applications/audio/ogfx/ogfx-ui.nix {};
+
   oh-my-zsh = callPackage ../shells/zsh/oh-my-zsh { };
 
   ola = callPackage ../applications/misc/ola { };
