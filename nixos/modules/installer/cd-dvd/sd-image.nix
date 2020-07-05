@@ -148,14 +148,14 @@ in
           echo "file sd-image $img" >> $out/nix-support/hydra-build-products
         fi
 
-        echo "copying rootfs image"
-        dd if="${rootfsImage}" of=./root-fs.img bs=10M
+        # echo "copying rootfs image"
+        # dd if="${rootfsImage}" of=./root-fs.img bs=10M
 
         # Gap in front of the first partition, in MiB
         gap=8
 
         # Create the image file sized to fit /boot/firmware and /, plus slack for the gap.
-        rootSizeBlocks=$(du -B 512 --apparent-size ./root-fs.img | awk '{ print $1 }')
+        rootSizeBlocks=$(du -B 512 --apparent-size ${rootfsImage} | awk '{ print $1 }')
         firmwareSizeBlocks=$((${toString config.sdImage.firmwareSize} * 1024 * 1024 / 512))
         imageSize=$((rootSizeBlocks * 512 + firmwareSizeBlocks * 512 + gap * 1024 * 1024))
         truncate -s $imageSize $img
@@ -173,7 +173,7 @@ in
 
         # Copy the rootfs into the SD image
         eval $(partx $img -o START,SECTORS --nr 2 --pairs)
-        dd conv=notrunc if=./root-fs.img of=$img seek=$START count=$SECTORS
+        dd conv=notrunc if=${rootfsImage} of=$img seek=$START count=$SECTORS
 
         # Create a FAT32 /boot/firmware partition of suitable size into firmware_part.img
         eval $(partx $img -o START,SECTORS --nr 1 --pairs)
