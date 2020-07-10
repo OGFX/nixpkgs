@@ -29,12 +29,7 @@ stdenv.mkDerivation rec {
   name = "${prefix}jack2-${version}";
   version = "1.9.14";
 
-  src = fetchFromGitHub {
-    owner = "jackaudio";
-    repo = "jack2";
-    rev = "v${version}";
-    sha256 = "1prxg1l8wrxfp2mh7l4mvjvmml6816fciq1la88ylhwm1qnfvnax";
-  };
+  src = /home/ogfx/jack2;
 
   nativeBuildInputs = [ pkgconfig python makeWrapper wafHook ];
   buildInputs = [ libsamplerate libsndfile readline eigen celt
