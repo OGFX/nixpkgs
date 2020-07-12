@@ -9,12 +9,16 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "ssj71";
     inherit repo;
-    rev = "beta_2";
-    sha256 = "128jcilbrd1l65c01w2bazsb21x78mng0jjkhi3x9crf1n9qbh2m";
+    rev = "beta_3";
+    sha256 = "16i4ajrib7kb0abdcn4901g8a4lkwkp2fyqyms38dhqq84slyfjs";
   };
 
   nativeBuildInputs = [ pkgconfig ];
   buildInputs = with xorg; [ automake lv2 fftw cmake libXpm libjack2 libsamplerate libsndfile libXft ];
+
+  prePatch = ''
+    substituteInPlace lv2/CMakeLists.txt --replace "-msse -msse2 -mfpmath=sse" "-march=native"
+  '';
 
   meta = {
     description = "Rakarrak effects ported to LV2";
