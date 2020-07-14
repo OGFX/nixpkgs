@@ -14,6 +14,10 @@ stdenv.mkDerivation {
   nativeBuildInputs = [ pkgconfig ];
   buildInputs = [ boost libX11 libGL liblo libjack2 ladspaH lv2 rubberband libsndfile fftwFloat libsamplerate ];
 
+  prePatch = ''
+    substituteInPlace ./dpf/Makefile.base.mk --replace '-mtune=generic -msse -msse2' '-march=native'
+  '';
+
   postPatch = ''
     patchShebangs ./dpf/utils/generate-ttl.sh
   '';
